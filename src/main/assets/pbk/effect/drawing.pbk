@@ -1,0 +1,97 @@
+<languageVersion : 1.0;>
+
+kernel Drawing
+<   namespace : "ar.shader";
+    vendor : "Alan Ross";
+    version : 1;
+    description : "Drawing";
+>
+{
+    parameter float n0
+    <
+        minValue: 0.0;
+        maxValue: 1.0; 
+        defaultValue: 0.74;
+    >;
+    parameter float n1
+    <
+        minValue: 0.0;
+        maxValue: 1.0; 
+        defaultValue: 0.45;
+    >;
+    parameter float n2
+    <
+        minValue: 0.0;
+        maxValue: 1.0; 
+        defaultValue: 0.88;
+    >;
+    parameter float n3
+    <
+        minValue: 0.0;
+        maxValue: 1.0; 
+        defaultValue: 0.90;
+    >;
+    parameter float n4
+    <
+        minValue: 0.0;
+        maxValue: 1.0; 
+        defaultValue: 0.79;
+    >;
+    parameter float n5
+    <
+        minValue: 0.0;
+        maxValue: 1.0; 
+        defaultValue: 0.75;
+    >;
+    parameter float n6
+    <
+        minValue: 0.0;
+        maxValue: 1.0; 
+        defaultValue: 0.67;
+    >;
+     
+    input image4 src;
+    output pixel4 dst;
+
+    void evaluatePixel()
+    {
+        float temp;
+        float2 p = outCoord();
+        float4 b = float4( 0.0, 0.0, 0.0, 1.0 );
+        float4 w = float4( 1.0, 1.0, 1.0, 1.0 );
+        
+        float4 s = sampleNearest( src, p );
+        
+        float stroke0 = mod( p.x + p.y, 1.0 );
+        float stroke1 = mod( p.x + p.y, 2.0 );
+        float stroke2 = mod( p.x + p.y, 4.0 );
+        float stroke3 = mod( p.x + p.y, 8.0 );
+        float stroke4 = mod( p.x + p.y, 16.0 );
+        float stroke5 = mod( p.x + p.y, 32.0 );
+        
+        float t6 = n6;
+        float t5 = n5;
+        float t4 = n4;
+        float t3 = n3;
+        float t2 = n2;
+        float t1 = n1;
+        float t0 = n0;
+        
+        float4 c = w;
+        
+        temp = ( s.r + s.g + s.b ) / 3.0;
+        s.r = temp;
+        s.g = temp;
+        s.b = temp;
+        
+        if( s.r < t0 && stroke0 <= 1.0 ){ c = b; }
+        if( s.r < t1 && stroke1 <= 1.0 ){ c = b; }
+        if( s.r < t2 && stroke2 <= 1.0 ){ c = b; }
+        if( s.r < t3 && stroke3 <= 1.0 ){ c = b; }
+        if( s.r < t4 && s.r > t5 && stroke1 <= 1.0 ){ c = b; }
+        if( s.r < t5 && stroke2 <= 1.0 ){ c = b; }
+        if( s.r < t6 && stroke3 <= 1.0 ){ c = b; }
+        
+        dst = c;
+    }
+}

@@ -1,0 +1,20 @@
+<languageVersion: 1.0;>
+kernel GreyScale
+<
+	namespace: "GreyScale";
+	vendor: "Alan Ross";
+	version: 1;
+	description: "GreyScale";
+>
+{
+	input image4 src;
+	output pixel4 dst;
+ 
+	void evaluatePixel()
+	{
+		float4 c = sampleNearest( src, outCoord());
+		
+        float v = ( c.r + c.g + c.b ) / 3.0;
+        dst = pixel4( v, v, v, 1.0 );
+   }
+}

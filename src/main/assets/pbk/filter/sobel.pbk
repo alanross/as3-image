@@ -1,0 +1,74 @@
+<languageVersion : 1.0;>
+
+kernel Sobel
+<   namespace : "ar.shader";
+    vendor : "Alan Ross";
+    version : 1;
+    description : "Sobel";
+>
+{
+	input image4 src;
+	output pixel4 dst;
+ 
+	void evaluatePixel()
+	{
+        // http://homepage.cs.uiowa.edu/~cwyman/classes/spring08-22C251/homework/sobel.pdf
+        
+		float2 orig = outCoord();
+		float2 pos = float2( 0.0, 0.0 );
+		
+        float v = 0.0;
+		float sum1 = 0.0;
+		float sum2 = 0.0;
+        
+        float t = orig.y - 1.0;
+        float c = orig.y;
+        float b = orig.y + 1.0;
+        
+        float l = orig.x - 1.0;
+        float m = orig.x;
+        float r = orig.x + 1.0;
+        
+        pos.y = t;
+        pos.x = l;
+        float4 c11 = sampleNearest( src, pos );
+        pos.x = m;
+        float4 c12 = sampleNearest( src, pos );
+        pos.x = r;
+        float4 c13 = sampleNearest( src, pos );
+        
+        pos.y = c;
+        pos.x = l;
+        float4 c21 = sampleNearest( src, pos );
+        pos.x = m;
+        float4 c22 = sampleNearest( src, pos );
+        pos.x = r;
+        float4 c23 = sampleNearest( src, pos );
+        
+        pos.y = b;
+        pos.x = l;
+        float4 c31 = sampleNearest( src, pos );
+        pos.x = m;
+        float4 c32 = sampleNearest( src, pos );
+        pos.x = r;
+        float4 c33 = sampleNearest( src, pos );
+		
+        // Using blue, assuming image is grey scale
+      
+        // Horizontal kernel
+        // -1, -2, -1,
+        //  0,  0,  0,
+        //  1,  2,  1
+        float dh = ( ( -c11.b ) + ( c12.b * -2.0 ) + ( -c13.b ) + ( c31.b ) + ( c32.b * 2.0 ) + ( c33.b ) );
+        
+        // Vertical kernel
+        // -1, 0, 1,
+        // -2, 0, 2,
+        // -1, 0, 1
+        float dv = ( ( -c11.b ) + ( c13.b ) + ( c21.b * -2.0 ) + ( c23.b * 2.0 ) + ( -c31.b ) + ( c33.b ) );
+        
+        float result = sqrt( ( dh * dh ) + ( dv * dv ) );
+        
+        dst = pixel4( result, result,result, 1.0 );
+    }
+}

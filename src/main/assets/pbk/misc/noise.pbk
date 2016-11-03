@@ -1,0 +1,74 @@
+<languageVersion : 1.0;>
+
+kernel Noise
+<   namespace : "ar.shader";
+    vendor : "Alan Ross";
+    version : 1;
+    description : "Noise";
+>
+{
+    parameter float n0
+    <
+        minValue: 0.0;
+        maxValue: 50.0; 
+        defaultValue: 17.5;
+    >;
+    parameter float n1
+    <
+        minValue: 0.0;
+        maxValue: 5.0; 
+        defaultValue: 1.75;
+    >;
+    parameter float n2
+    <
+        minValue: 0.0;
+        maxValue: 1.0; 
+        defaultValue: 0.97;
+    >;
+    parameter float n3
+    <
+        minValue: 0.0;
+        maxValue: 100.0; 
+        defaultValue: 4.0;
+    >;
+    parameter float n4 
+     < 
+      minValue: 0.0; 
+      maxValue: 1.0; 
+      defaultValue: 0.11;
+     >;
+     
+    input image4 src0;
+    output pixel4 dst;
+
+     
+    void evaluatePixel()
+    {
+        float2 pos = outCoord();
+        float2 offset;
+        float dist;
+        float4 c, threshold, p0, p1;
+        
+        float4 w = float4( 1.0, 1.0, 1.0,1.0 );
+        float4 b = float4( 0.0, 0.0, 0.0,1.0 );
+        
+        float noise = mod(pos.x + pos.y, 192.5);
+        noise = ( mod( pos.y * n0 * n1, n2 ) + mod( noise / n1, 3.0 ) + mod( noise, n1 ) ) / 2.0;
+        noise = ( mod( noise, 10.0) + mod( noise * n1, n2 ) + mod( noise * pos.x, n2 ) ) / n3;
+        
+        c = b;
+        threshold = float4( n4, n4, n4,1.0 );
+        
+        dist = n1 * 1.0;
+        offset.x = 0.0; offset.y = 0.0;
+        p0 = sampleNearest( src0, pos + offset );
+        //p1 = sampleNearest( src1, pos + offset );
+       
+        if( mod(n0,noise) > 0.3){ c = w; }
+        else{ c = b; }
+        
+        if( any( lessThan( threshold, p0 ) ) ){ c = w; }
+        
+        dst = c;
+    }
+}

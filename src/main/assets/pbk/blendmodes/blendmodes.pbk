@@ -1,0 +1,126 @@
+<languageVersion : 1.0;>
+
+kernel Blendmodes
+<   namespace : "ar.shader";
+    vendor : "Alan Ross";
+    version : 1;
+    description : "Blendmodes";
+>
+{
+    parameter float div
+    <
+        defaultValue : 0.0;
+        minValue : 0.0;
+        maxValue : 1.0;
+    >;
+    
+    input image4 in1;
+    input image4 in2;
+    output pixel4 dst;
+                        
+    void evaluatePixel()
+    {
+        pixel4 top = sampleNearest( in1, outCoord() );
+        pixel4 bottom = sampleNearest( in2, outCoord() );
+        pixel4 result;
+        
+        //top *= div;
+        
+        result.r = bottom.r + top.r;
+        result.g = bottom.g + top.g;
+        result.b = bottom.b + top.b;
+        result.a = 1.0;
+        
+        //result *= top;
+        
+        //----------------------- multiply blend mode
+        //top.a = 0.0;
+        //result.r = top.r * bottom.r / 1.0;
+        //result.g = top.g * bottom.g / 1.0;
+        //result.b = top.b * bottom.b / 1.0;
+        //result.a = 1.0;//top.a * bottom.a / 1.0;
+        
+        //----------------------- screen blend mode
+        //c = 1.0 - ( ( 1.0 - a ) * ( 1.0 - b ) / div );
+        //result.r = 1.0 - ( ( 1.0 - top.r ) * ( 1.0 - bottom.r ) / div );
+        //result.g = 1.0 - ( ( 1.0 - top.g ) * ( 1.0 - bottom.g ) / div );
+        //result.b = 1.0 - ( ( 1.0 - top.b ) * ( 1.0 - bottom.b ) / div );
+        //result.a = 1.0 - ( ( 1.0 - top.a ) * ( 1.0 - bottom.a ) / div );
+      
+        //----------------------- darken blend mode
+        //result.r = ( top.r < bottom.r ) ? top.r : bottom.r;
+        //result.g = ( top.g < bottom.g ) ? top.g : bottom.g;
+        //result.b = ( top.b < bottom.b ) ? top.b : bottom.b;
+        //result.a = 1.0;
+        
+        //----------------------- lighten blend mode
+        //result.r = ( top.r > bottom.r ) ? top.r : bottom.r;
+        //result.g = ( top.g > bottom.g ) ? top.g : bottom.g;
+        //result.b = ( top.b > bottom.b ) ? top.b : bottom.b;
+        //result.a = 1.0;
+        
+        //----------------------- lighten blend mode
+        //result.r = ( top.r > bottom.r ) ? top.r : bottom.r;
+        //result.g = ( top.g > bottom.g ) ? top.g : bottom.g;
+        //result.b = ( top.b > bottom.b ) ? top.b : bottom.b;
+        //result.a = 1.0;
+        
+        //----------------------- lighten blend mode
+        //result.r = abs( top.r - bottom.r );
+        //result.g = abs( top.g - bottom.g );
+        //result.b = abs( top.b - bottom.b );
+        //result.a = 1.0;
+        
+        //----------------------- inverse blend mode
+        //result.r = 1.0 - abs( 1.0 - top.r - bottom.r );
+        //result.g = 1.0 - abs( 1.0 - top.g - bottom.g );
+        //result.b = 1.0 - abs( 1.0 - top.b - bottom.b );
+        //result.a = 1.0;
+        
+        //----------------------- exclusion blend mode
+        //result.r = top.r + bottom.r - ( ( top.r * bottom.r ) / div );
+        //result.g = top.g + bottom.g - ( ( top.g * bottom.g ) / div );
+        //result.b = top.b + bottom.b - ( ( top.b * bottom.b ) / div );
+        //result.a = 1.0;
+        
+        //----------------------- overlay blend mode
+        //result.r = ( top.r < 0.5 ) ? top.r * bottom.r / div : 1.0 - ( ( 1.0 - top.r ) * ( 1.0 - bottom.r ) / div );
+        //result.g = ( top.g < 0.5 ) ? top.g * bottom.g / div : 1.0 - ( ( 1.0 - top.g ) * ( 1.0 - bottom.g ) / div );
+        //result.b = ( top.b < 0.5 ) ? top.b * bottom.b / div : 1.0 - ( ( 1.0 - top.b ) * ( 1.0 - bottom.b ) / div );
+        //result.a = 1.0;
+        
+        //----------------------- hardlight blend mode
+        //result.r = ( top.r < 0.5 ) ? ( top.r * bottom.r ) / div : 1.0 - ( ( 1.0 - bottom.r ) * ( 1.0 - top.r ) / div );
+        //result.g = ( top.g < 0.5 ) ? ( top.g * bottom.g ) / div : 1.0 - ( ( 1.0 - bottom.g ) * ( 1.0 - top.g ) / div );
+        //result.b = ( top.b < 0.5 ) ? ( top.b * bottom.b ) / div : 1.0 - ( ( 1.0 - bottom.b ) * ( 1.0 - top.b ) / div );
+        //result.a = 1.0;
+        
+        //----------------------- softlight blend mode
+        //result.r = top.r * bottom.r / div;
+        //result.g = top.g * bottom.g / div;
+        //result.b = top.b * bottom.b / div;
+        //result.a = 1.0;
+        
+        //result.r = result.r + top.r * ( 1.0 - ( ( 1.0 - top.r ) * ( 1.0 - bottom.r ) / div ) - result.r ) / div;
+        //result.g = result.g + top.g * ( 1.0 - ( ( 1.0 - top.g ) * ( 1.0 - bottom.g ) / div ) - result.g ) / div;
+        //result.b = result.b + top.b * ( 1.0 - ( ( 1.0 - top.b ) * ( 1.0 - bottom.b ) / div ) - result.b ) / div;
+        
+        //----------------------- color dodge blend mode
+        //result.r = ( top.r >= 1.0 ) ? 1.0 : min( bottom.r * 1.0 / ( 1.0 - top.r ), 1.0 );
+        //result.g = ( top.g >= 1.0 ) ? 1.0 : min( bottom.g * 1.0 / ( 1.0 - top.g ), 1.0 );
+        //result.b = ( top.b >= 1.0 ) ? 1.0 : min( bottom.b * 1.0 / ( 1.0 - top.b ), 1.0 );
+        //result.a = 1.0;
+        
+        //http://www.vanderlee.com/tut_fm_mixingmodes.html
+        
+        
+        //result.r = 1.0 - top.r;
+        //result.g = 1.0 - top.g;
+        //result.b = 1.0 - top.b;
+        //result.a = 1.0;
+        
+        
+        dst = result;
+        
+    }
+}

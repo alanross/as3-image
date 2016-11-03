@@ -1,0 +1,21 @@
+<languageVersion : 1.0;>
+
+kernel Numbers
+<   namespace : "ar.shader";
+    vendor : "Alan Ross";
+    version : 1;
+>
+{
+    input image1 src;
+    output pixel3 dst;
+
+    void evaluatePixel()
+    {
+        float2 pos = outCoord();
+        float val = sampleNearest( src, pos );
+        
+        val *= 2.0;
+        
+        dst = pixel3(val, 0.0, 0.0);
+    }
+}
